@@ -1,8 +1,8 @@
 # How to run 
-Instructions below are for Arch Linux, but besides "yay" command it should work on most distributions.
+Instructions below are for Arch Linux, but it should work on most distributions.
 ### 1. Install Opam
 ```
-yay opam
+sudo pacman -S opam #Or equivalent command for your distribution
 ```
 During instalation you will be asked if you want to edit bash_profile. Select "yes" as it will prevent possible problems.
 
