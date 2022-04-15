@@ -26,5 +26,5 @@ ocamlfind ocamlc -package bogue -linkpkg -o memory -thread memory.ml
 
 ### 4. Run
 ```
-./memory.ml
+./memory
 ```
