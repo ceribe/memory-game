@@ -1,10 +1,12 @@
 # How to run 
 Instructions below are for Arch Linux, but it should work on most distributions.
-### 1. Install Opam
+
+### 1. Install Opam (OCaml Package Manager)
+Installing Opam will also install OCaml as a dependency so there is no need to install it separately.
 ```
 sudo pacman -S opam #Or equivalent command for your distribution
 ```
-During instalation you will be asked if you want to edit bash_profile. Select "yes" as it will prevent possible problems.
+During instalation you will be asked if you want to edit ~/.bash_profile. Select "yes".
 
 ### 2. Install [Bogue](https://github.com/sanette/bogue)
 ```
@@ -16,7 +18,7 @@ Afterwards restart terminal and run:
 eval $(opam config env)
 ```
 
-### 3. Compilation
+### 3. Compile
 Enter repositiory's directory and run:
 ```
 ocamlfind ocamlc -package bogue -linkpkg -o memory -thread memory.ml
