@@ -26,27 +26,30 @@ let chunk_list xs size =
 (** Program logic *)
 
 (* List's lenght is 13 so after doubling each element and removing one it will be possible to place them in a 5x5 grid *)
-let color_names = ["red"; "blue"; "green"; "magenta"; "cyan"; "yellow"; "sienna"; "#ff9900"; "#ff99ff"; "#3333ff"; "#99ff99"; "#0099cc"; "#ffcccc"];;
+let tiles_names = ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j";"k";"l";"m"];;
 
-(* Double the occurence of each element so there will be a pair of each color *)
-let color_names_doubled = color_names @ color_names;;
+(* Double the occurence of each element so there will be a pair of each letter *)
+let tiles_names_doubled = tiles_names @ tiles_names;;
 
 (* Shuffle the list so every time the app is launched placement of pairs will be different *)
-let shuffled_colors = shuffle color_names_doubled;;
+let shuffled_names = shuffle tiles_names_doubled;;
 
-(* Remove one value from shuffled_colors so there is 25 elements total (5x5 grid) *)
-let colors = List.tl shuffled_colors;;
+(* Remove one value from shuffled_names so there is 25 elements total (5x5 grid) *)
+let names = List.tl shuffled_names;;
+
+let button_bg_color = (Draw.(opaque(find_color "#00FFFF")))
 
 let main () =
   (* TODO Update the label on each click *)
   let lab = W.label "Moves: 0" in
   
-  (* A flat list of buttons with colors *)
-  (* TODO Make them have the same color before clicking and only change it after click *)
-  (* TODO Found pairs should stay colored *)
+  (* A flat list of buttons with labels *)
+  (* TODO Make them have no label  before clicking and only change it after click *)
+  (* TODO Found pairs should have "X" *)
   (* TODO After guessing wrong hide both squares *)
   (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
-  let buttons = List.map (fun c -> W.button ~bg_off:(Solid(Draw.(opaque(find_color c)))) "") colors in  
+  let buttons = List.init 25 (fun _ -> W.button ~bg_off:(Solid button_bg_color) "?") in  
+  let button_names = List.map (fun b -> W.label b) names in
 
   (* Create a list of columns. Each column has 5 buttons *)
   let columns = List.map (fun l -> L.tower_of_w ~w:30 l) (chunk_list buttons 5) in
@@ -54,7 +57,7 @@ let main () =
   let flat_layout_with_text = L.flat_of_w [lab] in
   let squares_grid = L.flat ~sep:(-9) columns in
   let layout = L.tower [flat_layout_with_text;squares_grid] in
-  let board = Bogue.make [] [layout]   in
+  let board = Bogue.make [] [layout]  in
   Bogue.run board;;
 
 let () = main ();
