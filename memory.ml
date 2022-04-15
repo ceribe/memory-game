@@ -25,16 +25,16 @@ let chunk_list xs size =
 
 (** Program logic *)
 
-(* List of 13 different colors so after doubling them and removing one element it will be possible to place them in a 5x5 grid *)
+(* List's lenght is 13 so after doubling each element and removing one it will be possible to place them in a 5x5 grid *)
 let color_names = ["red"; "blue"; "green"; "magenta"; "cyan"; "yellow"; "sienna"; "#ff9900"; "#ff99ff"; "#3333ff"; "#99ff99"; "#0099cc"; "#ffcccc"];;
 
-(* Double occurence of each color so there will ba a pair of each *)
+(* Double the occurence of each element so there will be a pair of each color *)
 let color_names_doubled = color_names @ color_names;;
 
-(* Shuffle the colors list so every time the app is launched placement of pairs will be different *)
+(* Shuffle the list so every time the app is launched placement of pairs will be different *)
 let shuffled_colors = shuffle color_names_doubled;;
 
-(* Remove one value from shuffled_colors so there is 25 total elements (5x5 grid) *)
+(* Remove one value from shuffled_colors so there is 25 elements total (5x5 grid) *)
 let colors = List.tl shuffled_colors;;
 
 let main () =
