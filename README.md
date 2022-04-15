@@ -1,5 +1,5 @@
 # How to run 
-Instructions below are for Arch Linux distribution, but besides "yay" command it should work on most distributions.
+Instructions below are for Arch Linux, but besides "yay" command it should work on most distributions.
 ### 1. Install Opam
 ```
 yay opam
