@@ -41,20 +41,21 @@ let names = List.tl shuffled_names;;
 
 let button_bg_color = (Draw.(opaque(find_color "#00FFFF")))
 
+(* Variables representing game state *)
 let found_pairs = ref SSet.empty;;
 let prev_button = ref (W.button "");;
-let already_guessed = ref false;;
+let prev_button_2 = ref (W.button "");;
+let prev_value = ref "";;
+let prev_value_2 = ref "";;
+let already_guessed_count = ref 0;;
 let guess_count = ref 0;;
 
 let main () =
-  (* TODO Update the label on each click *)
-  let moves_label = W.label "Moves: 0" in
+  let moves_label = W.label "Moves: 000" in
   
   (* A flat list of buttons with labels *)
-  (* TODO Make them have no label before clicking and only change it after click *)
-  (* TODO Found pairs should have "X" *)
-  (* TODO After guessing wrong hide both squares *)
   (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
+  (* TODO Prevent clicking on the same button twice *)
   let buttons = List.init 25 (fun _ -> W.button ~bg_off:(Solid button_bg_color) "?") in  
 
   (* Each button has a corresponding label with it's value. It's a convinient way to be able to check button's real value in click action *)
@@ -63,8 +64,39 @@ let main () =
   (* Button names need to be placed on a layout to not crash the program *)
   let fake_layout = L.flat_of_w button_names in
 
+  (* Function checks if user guessed correctly and if so marks tiles with X and adds letter to set *)
+  let process_guess button name_label = 
+    if (W.get_text name_label) = !prev_value then begin
+      W.set_text button "X";
+      W.set_text !prev_button "X";
+      found_pairs := SSet.add (W.get_text name_label) !found_pairs;
+      already_guessed_count := 0
+    end
+  in
+
+  (* Resets previous guesses by hiding them *)
+  (* The paramter is not needed, but when there wasn't one this function wasn't called properly *)
+  let reset_prev_guesses _ =
+    already_guessed_count := 1;
+    W.set_text !prev_button_2 "?";
+    W.set_text !prev_button "?"
+  in
+
   let tile_click button name_label _ = 
     guess_count := !guess_count + 1;
+    already_guessed_count := !already_guessed_count + 1;
+    if !already_guessed_count == 2 then
+      process_guess button name_label;
+    if !already_guessed_count == 3 then
+      reset_prev_guesses 0; 
+
+    prev_button_2 := !prev_button;
+    prev_button := button;
+    prev_value_2 := !prev_value;
+    prev_value := W.get_text name_label;
+
+    if (W.get_text button) <> "X" then
+      W.set_text button (W.get_text name_label)
   in
 
   (* Binds all buttons and their names with tile_click function *)
@@ -76,6 +108,7 @@ let main () =
   let flat_layout_with_text = L.flat_of_w [moves_label] in
   let squares_grid = L.flat ~sep:(-9) columns in
 
+  (* Function run on each frame before displaying UI *)
   let before_display () =
     W.set_text moves_label ("Moves: " ^ string_of_int !guess_count) in
 
