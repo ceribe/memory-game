@@ -1,6 +1,8 @@
 open Bogue;;
 module W = Widget
 module L = Layout
+module T = Trigger
+module SSet = Set.Make(String)
 
 (** Utils functions *)
 
@@ -39,26 +41,47 @@ let names = List.tl shuffled_names;;
 
 let button_bg_color = (Draw.(opaque(find_color "#00FFFF")))
 
+let found_pairs = ref SSet.empty;;
+let prev_button = ref (W.button "");;
+let already_guessed = ref false;;
+let guess_count = ref 0;;
+
 let main () =
   (* TODO Update the label on each click *)
-  let lab = W.label "Moves: 0" in
+  let moves_label = W.label "Moves: 0" in
   
   (* A flat list of buttons with labels *)
-  (* TODO Make them have no label  before clicking and only change it after click *)
+  (* TODO Make them have no label before clicking and only change it after click *)
   (* TODO Found pairs should have "X" *)
   (* TODO After guessing wrong hide both squares *)
   (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
   let buttons = List.init 25 (fun _ -> W.button ~bg_off:(Solid button_bg_color) "?") in  
+
+  (* Each button has a corresponding label with it's value. It's a convinient way to be able to check button's real value in click action *)
   let button_names = List.map (fun b -> W.label b) names in
+
+  (* Button names need to be placed on a layout to not crash the program *)
+  let fake_layout = L.flat_of_w button_names in
+
+  let tile_click button name_label _ = 
+    guess_count := !guess_count + 1;
+  in
+
+  (* Binds all buttons and their names with tile_click function *)
+  let connections = List.map2 (fun b n -> W.connect b n tile_click T.buttons_down) buttons button_names in
 
   (* Create a list of columns. Each column has 5 buttons *)
   let columns = List.map (fun l -> L.tower_of_w ~w:30 l) (chunk_list buttons 5) in
 
-  let flat_layout_with_text = L.flat_of_w [lab] in
+  let flat_layout_with_text = L.flat_of_w [moves_label] in
   let squares_grid = L.flat ~sep:(-9) columns in
+
+  let before_display () =
+    W.set_text moves_label ("Moves: " ^ string_of_int !guess_count) in
+
   let layout = L.tower [flat_layout_with_text;squares_grid] in
-  let board = Bogue.make [] [layout]  in
-  Bogue.run board;;
+  let board = Bogue.make connections [layout]  in
+  Bogue.run ~before_display board;;
 
 let () = main ();
   Bogue.quit ()
