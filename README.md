@@ -6,10 +6,11 @@ Installing Opam will also install OCaml as a dependency so there is no need to i
 ```
 sudo pacman -S opam #Or equivalent command for your distribution
 ```
-During instalation you will be asked if you want to edit ~/.bash_profile. Select "yes".
+During instalation you may be asked if you want to edit ~/.bash_profile. Select "yes".
 
 ### 2. Install [Bogue](https://github.com/sanette/bogue)
 ```
+sudo pacman -S pkg-config
 opam install bogue
 ```
 During installation you will be asked to install additional packages. Install them.
