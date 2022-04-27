@@ -46,7 +46,6 @@ let found_pairs = ref SSet.empty;;
 let prev_button = ref (W.button "");;
 let prev_button_2 = ref (W.button "");;
 let prev_value = ref "";;
-let prev_value_2 = ref "";;
 let already_guessed_count = ref 0;;
 let guess_count = ref 0;;
 
@@ -54,11 +53,9 @@ let main () =
   let moves_label = W.label "Moves: 000" in
   
   (* A flat list of buttons with labels *)
-  (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
-  (* TODO Prevent clicking on the same button twice *)
   let buttons = List.init 25 (fun _ -> W.button ~bg_off:(Solid button_bg_color) "?") in  
 
-  (* Each button has a corresponding label with it's value. It's a convinient way to be able to check button's real value in click action *)
+  (* Each button has a corresponding label with its value. It's a convinient way to be able to check button's real value in click action *)
   let button_names = List.map (fun b -> W.label b) names in
 
   (* Button names need to be placed on a layout to not crash the program *)
@@ -83,6 +80,8 @@ let main () =
   in
 
   let tile_click button name_label _ = 
+  (* TODO Fix when clicked on X *)
+  (* TODO Prevent clicking on the same button twice *)
     guess_count := !guess_count + 1;
     already_guessed_count := !already_guessed_count + 1;
     if !already_guessed_count == 2 then
@@ -92,11 +91,12 @@ let main () =
 
     prev_button_2 := !prev_button;
     prev_button := button;
-    prev_value_2 := !prev_value;
     prev_value := W.get_text name_label;
 
     if (W.get_text button) <> "X" then
       W.set_text button (W.get_text name_label)
+
+  (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
   in
 
   (* Binds all buttons and their names with tile_click function *)
