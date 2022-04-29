@@ -28,8 +28,6 @@ eval $(opam config env)
 
 ### 3. Compile
 
-Enter repositiory's directory and run:
-
 ```bash
 make
 ```
