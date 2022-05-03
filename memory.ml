@@ -94,7 +94,8 @@ let main () =
       prev_button_2 := !prev_button;
       prev_button := button;
       prev_value := W.get_text name_label;
-      W.set_text button (W.get_text name_label) end
+      if (W.get_text button) <> "X" then
+        W.set_text button (W.get_text name_label) end
 
   (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
   in
