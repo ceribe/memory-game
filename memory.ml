@@ -2,7 +2,6 @@ open Bogue;;
 module W = Widget
 module L = Layout
 module T = Trigger
-module SSet = Set.Make(String)
 
 (** Utils functions *)
 
@@ -42,7 +41,7 @@ let names = List.tl shuffled_names;;
 let button_bg_color = (Draw.(opaque(find_color "#00FFFF")))
 
 (* Variables representing game state *)
-let found_pairs = ref SSet.empty;;
+let found_pairs = ref 0;;
 let prev_button = ref (W.button "");;
 let prev_button_2 = ref (W.button "");;
 let prev_value = ref "";;
@@ -66,7 +65,7 @@ let main () =
     if (W.get_text name_label) = !prev_value then begin
       W.set_text button "X";
       W.set_text !prev_button "X";
-      found_pairs := SSet.add (W.get_text name_label) !found_pairs;
+      found_pairs := !found_pairs + 1;
       already_guessed_count := 0
     end
   in
