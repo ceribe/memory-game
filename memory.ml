@@ -82,19 +82,19 @@ let main () =
   let tile_click button name_label _ = 
   (* TODO Fix when clicked on X *)
   (* TODO Prevent clicking on the same button twice *)
-    guess_count := !guess_count + 1;
-    already_guessed_count := !already_guessed_count + 1;
-    if !already_guessed_count == 2 then
-      process_guess button name_label;
-    if !already_guessed_count == 3 then
-      reset_prev_guesses 0; 
+    if (W.get_text button) = "?" then begin
 
-    prev_button_2 := !prev_button;
-    prev_button := button;
-    prev_value := W.get_text name_label;
+      guess_count := !guess_count + 1;
+      already_guessed_count := !already_guessed_count + 1;
+      if !already_guessed_count == 2 then
+        process_guess button name_label;
+      if !already_guessed_count == 3 then
+        reset_prev_guesses 0; 
 
-    if (W.get_text button) <> "X" then
-      W.set_text button (W.get_text name_label)
+      prev_button_2 := !prev_button;
+      prev_button := button;
+      prev_value := W.get_text name_label;
+      W.set_text button (W.get_text name_label) end
 
   (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
   in
