@@ -80,8 +80,6 @@ let main () =
   in
 
   let tile_click button name_label _ = 
-  (* TODO Fix when clicked on X *)
-  (* TODO Prevent clicking on the same button twice *)
     if (W.get_text button) = "?" then begin
 
       guess_count := !guess_count + 1;
