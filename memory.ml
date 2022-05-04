@@ -40,13 +40,57 @@ let names = List.tl shuffled_names;;
 
 let button_bg_color = (Draw.(opaque(find_color "#00FFFF")))
 
-(* Variables representing game state *)
+(** Variables representing game state *)
+
 let found_pairs = ref 0;;
 let prev_button = ref (W.button "");;
 let prev_button_2 = ref (W.button "");;
 let prev_value = ref "";;
 let already_guessed_count = ref 0;;
 let guess_count = ref 0;;
+
+(** Functions used to respond to user input *)
+
+(* Checks if user guessed correctly and if so marks tiles with X *)
+let process_guess button name_label = 
+  if (W.get_text name_label) = !prev_value then begin
+    W.set_text button "X";
+    W.set_text !prev_button "X";
+    found_pairs := !found_pairs + 1;
+    already_guessed_count := 0
+  end
+;;
+
+(* Resets previous guesses by hiding them *)
+(* The paramter is not needed, but when there wasn't one this function wasn't called properly *)
+let reset_prev_guesses _ =
+  already_guessed_count := 1;
+  W.set_text !prev_button_2 "?";
+  W.set_text !prev_button "?"
+;;
+
+let process_tile_click button name_label = 
+  guess_count := !guess_count + 1;
+  already_guessed_count := !already_guessed_count + 1;
+  if !already_guessed_count == 2 then
+    process_guess button name_label;
+  if !already_guessed_count == 3 then
+    reset_prev_guesses 0; 
+
+  prev_button_2 := !prev_button;
+  prev_button := button;
+  prev_value := W.get_text name_label;
+  if (W.get_text button) <> "X" then
+    W.set_text button (W.get_text name_label)
+(* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
+;;
+
+let on_tile_click button name_label _ = 
+  if (W.get_text button) = "?" then (process_tile_click button name_label)
+  else ()
+;; 
+
+(** UI definition  *)
 
 let main () =
   let moves_label = W.label "Moves: 000" in
@@ -58,47 +102,10 @@ let main () =
   let button_names = List.map (fun b -> W.label b) names in
 
   (* Button names need to be placed on a layout to not crash the program *)
-  let fake_layout = L.flat_of_w button_names in
-
-  (* Function checks if user guessed correctly and if so marks tiles with X and adds letter to set *)
-  let process_guess button name_label = 
-    if (W.get_text name_label) = !prev_value then begin
-      W.set_text button "X";
-      W.set_text !prev_button "X";
-      found_pairs := !found_pairs + 1;
-      already_guessed_count := 0
-    end
-  in
-
-  (* Resets previous guesses by hiding them *)
-  (* The paramter is not needed, but when there wasn't one this function wasn't called properly *)
-  let reset_prev_guesses _ =
-    already_guessed_count := 1;
-    W.set_text !prev_button_2 "?";
-    W.set_text !prev_button "?"
-  in
-
-  let tile_click button name_label _ = 
-    if (W.get_text button) = "?" then begin
-
-      guess_count := !guess_count + 1;
-      already_guessed_count := !already_guessed_count + 1;
-      if !already_guessed_count == 2 then
-        process_guess button name_label;
-      if !already_guessed_count == 3 then
-        reset_prev_guesses 0; 
-
-      prev_button_2 := !prev_button;
-      prev_button := button;
-      prev_value := W.get_text name_label;
-      if (W.get_text button) <> "X" then
-        W.set_text button (W.get_text name_label) end
-
-  (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
-  in
+  let _ = L.flat_of_w button_names in
 
   (* Binds all buttons and their names with tile_click function *)
-  let connections = List.map2 (fun b n -> W.connect b n tile_click T.buttons_down) buttons button_names in
+  let connections = List.map2 (fun b n -> W.connect b n on_tile_click T.buttons_down) buttons button_names in
 
   (* Create a list of columns. Each column has 5 buttons *)
   let columns = List.map (fun l -> L.tower_of_w ~w:30 l) (chunk_list buttons 5) in
