@@ -51,12 +51,22 @@ let guess_count = ref 0;;
 
 (** Functions used to respond to user input *)
 
+let end_game layout =
+  (*Popup.info ~w:100 ~h:70 "You won" layout;*)
+  let yes_action () = exit 0 in
+  let no_action () = exit 0 in
+  Popup.yesno ~w:100 ~h:50 "Are you happy?" ~yes_action ~no_action layout;;
+
+
 (* Checks if user guessed correctly and if so marks tiles with X *)
-let process_guess button name_label = 
+let process_guess button name_label layout= 
   if (W.get_text name_label) = !prev_value then begin
     W.set_text button "X";
     W.set_text !prev_button "X";
     found_pairs := !found_pairs + 1;
+    if (!found_pairs = 12) then begin end_game layout;
+    end;
+
     already_guessed_count := 0
   end
 ;;
@@ -69,11 +79,12 @@ let reset_prev_guesses _ =
   W.set_text !prev_button "?"
 ;;
 
-let process_tile_click button name_label = 
+let process_tile_click button name_label layout = 
+if (W.get_text button) = "?" then begin
   guess_count := !guess_count + 1;
   already_guessed_count := !already_guessed_count + 1;
   if !already_guessed_count == 2 then
-    process_guess button name_label;
+    process_guess button name_label layout;
   if !already_guessed_count == 3 then
     reset_prev_guesses 0; 
 
@@ -81,14 +92,10 @@ let process_tile_click button name_label =
   prev_button := button;
   prev_value := W.get_text name_label;
   if (W.get_text button) <> "X" then
-    W.set_text button (W.get_text name_label)
+    W.set_text button (W.get_text name_label) end
 (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
 ;;
 
-let on_tile_click button name_label _ = 
-  if (W.get_text button) = "?" then (process_tile_click button name_label)
-  else ()
-;; 
 
 (** UI definition  *)
 
@@ -104,9 +111,6 @@ let main () =
   (* Button names need to be placed on a layout to not crash the program *)
   let _ = L.flat_of_w button_names in
 
-  (* Binds all buttons and their names with tile_click function *)
-  let connections = List.map2 (fun b n -> W.connect b n on_tile_click T.buttons_down) buttons button_names in
-
   (* Create a list of columns. Each column has 5 buttons *)
   let columns = List.map (fun l -> L.tower_of_w ~w:30 l) (chunk_list buttons 5) in
 
@@ -118,7 +122,15 @@ let main () =
     W.set_text moves_label ("Moves: " ^ string_of_int !guess_count) in
 
   let layout = L.tower [flat_layout_with_text;squares_grid] in
+
+  let on_tile_click button name_label _ = 
+  if (W.get_text button) = "?" then (process_tile_click button name_label layout)
+  else ()in
+
+    (* Binds all buttons and their names with tile_click function *)
+  let connections = List.map2 (fun b n -> W.connect b n on_tile_click T.buttons_down) buttons button_names in
   let board = Bogue.make connections [layout]  in
+
   Bogue.run ~before_display board;;
 
 let () = main ();
