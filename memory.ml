@@ -59,7 +59,7 @@ let end_game layout =
 
 
 (* Checks if user guessed correctly and if so marks tiles with X *)
-let process_guess button name_label layout= 
+let process_guess button name_label layout = 
   if (W.get_text name_label) = !prev_value then begin
     W.set_text button "X";
     W.set_text !prev_button "X";
@@ -80,7 +80,6 @@ let reset_prev_guesses _ =
 ;;
 
 let process_tile_click button name_label layout = 
-if (W.get_text button) = "?" then begin
   guess_count := !guess_count + 1;
   already_guessed_count := !already_guessed_count + 1;
   if !already_guessed_count == 2 then
@@ -92,10 +91,9 @@ if (W.get_text button) = "?" then begin
   prev_button := button;
   prev_value := W.get_text name_label;
   if (W.get_text button) <> "X" then
-    W.set_text button (W.get_text name_label) end
+    W.set_text button (W.get_text name_label)
 (* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
 ;;
-
 
 (** UI definition  *)
 
@@ -124,13 +122,14 @@ let main () =
   let layout = L.tower [flat_layout_with_text;squares_grid] in
 
   let on_tile_click button name_label _ = 
-  if (W.get_text button) = "?" then (process_tile_click button name_label layout)
-  else ()in
+    if (W.get_text button) = "?" then (process_tile_click button name_label layout)
+    else ()
+  in
 
-    (* Binds all buttons and their names with tile_click function *)
+  (* Binds all buttons and their names with tile_click function *)
   let connections = List.map2 (fun b n -> W.connect b n on_tile_click T.buttons_down) buttons button_names in
-  let board = Bogue.make connections [layout]  in
 
+  let board = Bogue.make connections [layout]  in
   Bogue.run ~before_display board;;
 
 let () = main ();
