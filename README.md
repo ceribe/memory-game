@@ -1,4 +1,10 @@
-# How to run
+# Memory Game
+
+<p align="center">
+  <img src="ss.png">
+</p>
+
+## How to run
 
 Instructions below are for Arch Linux, but it should work on most distributions.
 
