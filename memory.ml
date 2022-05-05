@@ -48,14 +48,14 @@ let prev_button_2 = ref (W.button "");;
 let prev_value = ref "";;
 let already_guessed_count = ref 0;;
 let guess_count = ref 0;;
+let end_label_text = ref "";;
+
 
 (** Functions used to respond to user input *)
 
 let end_game layout =
-  (*Popup.info ~w:100 ~h:70 "You won" layout;*)
-  let yes_action () = exit 0 in
-  let no_action () = exit 0 in
-  Popup.yesno ~w:100 ~h:50 "Are you happy?" ~yes_action ~no_action layout;;
+   end_label_text := "Game over.";
+   Popup.info ~w:100 ~h:70 "You won!" layout;;
 
 
 (* Checks if user guessed correctly and if so marks tiles with X *)
@@ -92,13 +92,14 @@ let process_tile_click button name_label layout =
   prev_value := W.get_text name_label;
   if (W.get_text button) <> "X" then
     W.set_text button (W.get_text name_label)
-(* TODO Detect when user has unveiled all 12 pairs and show a message box. After clicking on the message box app should close *)
 ;;
 
 (** UI definition  *)
 
 let main () =
   let moves_label = W.label "Moves: 000" in
+  let end_label = W.label "                        " in
+
   
   (* A flat list of buttons with labels *)
   let buttons = List.init 25 (fun _ -> W.button ~bg_off:(Solid button_bg_color) "?") in  
@@ -114,12 +115,15 @@ let main () =
 
   let flat_layout_with_text = L.flat_of_w [moves_label] in
   let squares_grid = L.flat ~sep:(-9) columns in
+  let end_layout= L.flat_of_w [end_label] in
+
 
   (* Function run on each frame before displaying UI *)
   let before_display () =
-    W.set_text moves_label ("Moves: " ^ string_of_int !guess_count) in
+    W.set_text moves_label ("Moves: " ^ string_of_int !guess_count);
+    W.set_text end_label !end_label_text in
 
-  let layout = L.tower [flat_layout_with_text;squares_grid] in
+  let layout = L.tower [flat_layout_with_text;squares_grid;end_layout] in
 
   let on_tile_click button name_label _ = 
     if (W.get_text button) = "?" then (process_tile_click button name_label layout)
