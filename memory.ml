@@ -51,7 +51,7 @@ let end_label_text = ref ""
 
 (** Functions used to respond to user input *)
 
-let end_game layout =
+let show_end_game layout =
    end_label_text := "Game over";
    Popup.info ~w:60 ~h:40 "You won!" layout
 ;;
@@ -63,7 +63,7 @@ let process_guess button name_label layout =
     W.set_text button "X";
     W.set_text !prev_button "X";
     found_pairs := !found_pairs + 1;
-    if !found_pairs = 12 then end_game layout
+    if !found_pairs = 12 then show_end_game layout
   end
 
 (* Resets previous guesses by hiding them *)
