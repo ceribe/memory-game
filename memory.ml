@@ -81,7 +81,7 @@ let process_tile_click button name_label layout =
   if !already_guessed_count == 2 then
     process_guess button name_label layout;
   if !already_guessed_count == 3 then
-    reset_prev_guesses 0; 
+    reset_prev_guesses (); 
 
   prev_button_2 := !prev_button;
   prev_button := button;
