@@ -5,21 +5,21 @@ module T = Trigger
 
 (** Utility functions *)
 
-(* Returns a copy of list "d" but, order of its elements is random *)
-let shuffle d = 
+(* Returns a given list but order of its elements is random *)
+let shuffle list = 
     Random.self_init ();
-    let nd = List.map (fun c -> (Random.bits (), c)) d in
-    let sond = List.sort compare nd in
-    List.map snd sond
+    let tuples = List.map (fun elem -> (Random.bits (), elem)) list in
+    let sorted_tuples = List.sort compare tuples in
+    List.map snd sorted_tuples
 
-(* Chunks given "xs" list. Each chunk's lenght will be equal to "size" 
+(* Chunks given list. Each chunk's lenght will be equal to "size" 
   chunk_list [1;2;3;4;5;6;7;8;9] 3 => [[1;2;3];[4;5;6];[7;8;9]] *)
-let chunk_list xs size =
+let chunk_list list size =
   let (_, r, rs) =
     List.fold_left (fun (csize, ys, zss) elt ->
       if csize = 0 then (size - 1, [elt], zss @ [ys])
       else (csize - 1, ys @ [elt], zss))
-        (size, [], []) xs
+        (size, [], []) list
   in
   rs @ [r]
 
