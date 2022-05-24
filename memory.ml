@@ -15,13 +15,15 @@ let shuffle list =
 (* Chunks given list. Each chunk's lenght will be equal to "size" 
   chunk_list [1;2;3;4;5;6;7;8;9] 3 => [[1;2;3];[4;5;6];[7;8;9]] *)
 let chunk_list list size =
-  let (_, r, rs) =
-    List.fold_left (fun (csize, ys, zss) elt ->
-      if csize = 0 then (size - 1, [elt], zss @ [ys])
-      else (csize - 1, ys @ [elt], zss))
-        (size, [], []) list
+  let (_, remainings, chunked_list) =
+    List.fold_left (fun (current_size, current_list, chunked_list) elem ->
+      if current_size = 0 then 
+        (size - 1, [elem], chunked_list @ [current_list])
+      else 
+        (current_size - 1, current_list @ [elem], chunked_list)
+      ) (size, [], []) list
   in
-  rs @ [r]
+  chunked_list @ [remainings]
 
 (** Constants initalization *)
 
