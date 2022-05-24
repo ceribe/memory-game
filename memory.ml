@@ -56,7 +56,6 @@ let end_label_text = ref ""
 let show_end_game layout =
    end_label_text := "Game over";
    Popup.info ~w:60 ~h:40 "You won!" layout
-;;
 
 (* Checks if user guessed correctly and if so marks tiles with X *)
 let process_guess button name_label layout = 
