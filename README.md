@@ -17,7 +17,7 @@ sudo pacman -S opam #Or equivalent command for your distribution
 ```
 
 During instalation you may be asked if you want to edit ~/.bash_profile. Select "yes". If you are not asked or you chose "no" then every
-time before running make with a new terminal you will need to run the eval command listed below.
+time before running "make" with a new terminal you will need to run the eval command listed below.
 
 ### 2. Install Dune (OCaml Build System)
 
