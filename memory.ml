@@ -5,7 +5,7 @@ module T = Trigger
 
 (** Utility functions *)
 
-(* Returns a given list but order of its elements is random *)
+(* Returns a copy of given list but order of its elements is random *)
 let shuffle list = 
     Random.self_init ();
     let tuples = List.map (fun elem -> (Random.bits (), elem)) list in
